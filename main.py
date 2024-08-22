@@ -1,3 +1,4 @@
+import copy
 import dataclasses
 import os
 import json
@@ -52,6 +53,17 @@ class NMSObject(object):
     def get_z(self):
         return self.position[2]
 
+    def as_dict(self):
+        return {
+            "ObjectID": self.object_id,
+            "Position": self.position,
+            "Up": self.up,
+            "At": self.at,
+            "Timestamp": self.timestamp,
+            "UserData": self.userdata,
+            "Message": self.message,
+        }
+
 
 # Object IDs of various base parts
 BASE_FLAG_ID = "^BASE_FLAG"
@@ -89,13 +101,18 @@ color_map = {
 }
 
 
-def create_obj_for_color(base_computer: NMSObject, offsets: List[float], obj_type: str):
-    this_obj = NMSObject(dataclasses.asdict(base_computer))
+def create_obj_for_color(reference_object: NMSObject, offsets: List[float], obj_type: str):
+    this_obj = copy.copy(reference_object)
+    this_obj.at = reference_object.at
+    this_obj.up = reference_object.up
     this_obj.object_id = obj_type
+    this_obj.timestamp = reference_object.timestamp
+    this_obj.userdata = reference_object.userdata
+    this_obj.message = reference_object.message
     this_obj.position = [
-        base_computer.position[0] + offsets[0],
-        base_computer.position[1] + offsets[1],
-        base_computer.position[2] + offsets[2],
+        reference_object.position[0] + offsets[0],
+        reference_object.position[1] + offsets[1],
+        reference_object.position[2] + offsets[2],
     ]
     return this_obj
 
@@ -108,7 +125,7 @@ class ImageTooBigError(Exception):
 
 
 def sprite_data_to_objects(
-        sprite_data_file:str, base_computer: NMSObject
+        sprite_data_file: str, base_computer: NMSObject
 ) -> List[NMSObject]:
     result = []
     with Image.open(sprite_data_file) as image:
@@ -140,14 +157,15 @@ def file_exists(file_path):
         print(f"The file specified does not exist: {file_path}")
         exit(1)
 
+
 import dataclasses, json
 
-class EnhancedJSONEncoder(json.JSONEncoder):
-        def default(self, o):
-            if dataclasses.is_dataclass(o):
-                return dataclasses.asdict(o)
-            return super().default(o)
 
+class EnhancedJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if dataclasses.is_dataclass(o):
+            return dataclasses.asdict(o)
+        return super().default(o)
 
 
 if __name__ == "__main__":
@@ -179,7 +197,9 @@ if __name__ == "__main__":
 
     assert len(objects) <= MAX_BASE_OBJS
 
-    base_data.get("Objects").extend(objects)
+    # Update the JSON with new objects
+    dict_objects = [nms_object.as_dict() for nms_object in objects]
+    base_data.get("Objects").extend(dict_objects)
 
     print("Here comes the updated NMS base json")
     print("-=-=" * 10)
