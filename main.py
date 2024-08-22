@@ -63,9 +63,13 @@ def sprite_data_to_objects(sprite_data_file, base_computer):
         image.verify()
         pixels = list(im.getdata())
         width, height = im.size
+        # break data into rows
+        for y in range(0, height):
+            for x in range(0, width):
+                print("pixel")
+                pixels[y][x].band
+                
 
-
-    pass
 
 
 if __name__ == '__main__':
