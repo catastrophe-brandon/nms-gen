@@ -9,13 +9,20 @@ from PIL import Image
 
 import argparse
 
-parser = argparse.ArgumentParser(description="Produces updated NMS base json1")
+parser = argparse.ArgumentParser(description="Produces updated NMS base json")
 parser.add_argument(
     "base_json", type=str, help="Path to the json file containing base data"
 )
 parser.add_argument(
     "sprite_file", type=str, help="Path to the json file with the input sprite data"
 )
+parser.add_argument(
+    "z_up",
+    type=float,
+    help="Vertical adjustment to put tiles above terrain",
+    default=5.0,
+)
+parser.add_argument("--o", type=str, help="Path to JSON output file")
 
 
 def load_base_json(file_path) -> dict:
@@ -79,9 +86,9 @@ def validate_base_input_data(base_input_data: dict):
         print("Objects array in base data was not found")
         raise InvalidBaseDataError
 
-    # Base computer should be the first object in the array
+    # Base computer should be the first object in the array or this won't work as expected
     if base_input_data.get("Objects")[0].get("ObjectID") != BASE_FLAG_ID:
-        print("First object was not the base computer")
+        print("First object was not the base computer, this base is unsupported atm")
         raise InvalidBaseDataError
 
 
@@ -90,24 +97,42 @@ MARIO_BLUE_BACKGROUND = (146, 144, 255, 255)
 MARIO_RED = (181, 49, 32, 255)
 MARIO_BROWN = (107, 109, 0, 255)
 MARIO_FACE = (234, 158, 34, 255)
+BLACK = (0, 0, 0, 0)
+BLACK2 = (0, 0, 0, 255)
+MM_BLUE = (0, 112, 236, 255)
+MM_TEAL = (0, 232, 216, 255)
+MM_FACE = (252, 216, 168, 255)
+MM_WHITE = (255, 255, 255, 0)
+MM_OFF_WHITE = (252, 252, 252, 255)
 
-# Oversimplified mapping of 8-bit color channel pixel colors to NMS object types
+# Oversimplified mapping of 8-bit color channel pixel colors to tuples
+# Each tuple is nms_obj_type, userdata_value
+# userdata seems to help determine the color of a base part in-game
 color_map = {
-    0: DEFAULT_OBJECT,
-    MARIO_RED: STONE_DOME_ROOF,
-    MARIO_BROWN: WOOD_FLOOR_TILE,
-    MARIO_FACE: STONE_FLOOR_TILE,
-    MARIO_BLUE_BACKGROUND: None
+    0: (DEFAULT_OBJECT, 0),
+    MARIO_RED: (STONE_DOME_ROOF, 34),
+    MARIO_BROWN: (WOOD_FLOOR_TILE, 88),
+    MARIO_FACE: (STONE_FLOOR_TILE, 0),
+    MARIO_BLUE_BACKGROUND: None,
+    BLACK: ("^F_FLOOR", 0),
+    MM_BLUE: ("^CUBEGLASS", 0),
+    MM_TEAL: ("^CUBEROOM", 0),
+    MM_FACE: (STONE_FLOOR_TILE, 0),
+    MM_WHITE: ("^BUILDPAVING_BIG", 0),
+    BLACK2: ("^F_FLOOR", 0),
+    MM_OFF_WHITE: ("^BUILDPAVING_BIG", 0),
 }
 
 
-def create_obj_for_color(reference_object: NMSObject, offsets: List[float], obj_type: str):
+def create_obj_for_color(
+    reference_object: NMSObject, offsets: List[float], obj_type: tuple[str, int]
+):
     this_obj = copy.copy(reference_object)
     this_obj.at = reference_object.at
     this_obj.up = reference_object.up
-    this_obj.object_id = obj_type
+    this_obj.object_id = obj_type[0]
     this_obj.timestamp = reference_object.timestamp
-    this_obj.userdata = reference_object.userdata
+    this_obj.userdata = obj_type[1]
     this_obj.message = reference_object.message
     this_obj.position = [
         reference_object.position[0] + offsets[0],
@@ -125,7 +150,7 @@ class ImageTooBigError(Exception):
 
 
 def sprite_data_to_objects(
-        sprite_data_file: str, base_computer: NMSObject
+    sprite_data_file: str, base_computer: NMSObject, z_up=0.0
 ) -> List[NMSObject]:
     result = []
     with Image.open(sprite_data_file) as image:
@@ -136,17 +161,26 @@ def sprite_data_to_objects(
             print("Image too big!")
             raise ImageTooBigError
 
-        # x_start = base_computer.position[0]
-        # y_start = base_computer.position[1]
         # break data into rows
         offset = 0
+        TILE_DELTA = 5
         for i in pixels:
+            # set x and y appropriately
             y = offset // width
             x = offset % width
-            obj_type = color_map[i]
-            print(f"offset: {offset} ({x},{y})")
-            if obj_type:
-                this_obj = create_obj_for_color(base_computer, [x, y, base_computer.position[2]], obj_type)
+            # If pixel is transparent, skip
+            if i[3] != 0:
+                obj_type = color_map[i]
+                print(f"offset: {offset} ({x},{y})")
+                tile_x = base_computer.position[0] + x * TILE_DELTA
+                tile_y = base_computer.position[1] + y * TILE_DELTA
+                # z is constant, flat
+                tile_z = base_computer.position[2] + z_up
+                print(f"Tile coord: ({tile_x}, {tile_y}, {tile_z})")
+                if obj_type:
+                    this_obj = create_obj_for_color(
+                        base_computer, [tile_x, tile_z, tile_y], obj_type
+                    )
                 result.append(this_obj)
             offset += 1
     return result
@@ -158,16 +192,6 @@ def file_exists(file_path):
         exit(1)
 
 
-import dataclasses, json
-
-
-class EnhancedJSONEncoder(json.JSONEncoder):
-    def default(self, o):
-        if dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
-        return super().default(o)
-
-
 if __name__ == "__main__":
 
     args = vars(parser.parse_args())
@@ -176,6 +200,11 @@ if __name__ == "__main__":
     base_data_file = args["base_json"]
     # path to sprite data file
     sprite_data_file = args["sprite_file"]
+
+    output_file = args["o"]
+
+    z_up = args["z_up"]
+    print(f"z_up is {z_up}")
 
     file_exists(base_data_file)
     file_exists(sprite_data_file)
@@ -193,7 +222,7 @@ if __name__ == "__main__":
 
     base_computer = NMSObject(base_data.get("Objects")[0])
 
-    objects = sprite_data_to_objects(sprite_data_file, base_computer)
+    objects = sprite_data_to_objects(sprite_data_file, base_computer, z_up=z_up)
 
     assert len(objects) <= MAX_BASE_OBJS
 
@@ -201,6 +230,8 @@ if __name__ == "__main__":
     dict_objects = [nms_object.as_dict() for nms_object in objects]
     base_data.get("Objects").extend(dict_objects)
 
-    print("Here comes the updated NMS base json")
+    print(f"Writing output JSON file to {output_file}")
     print("-=-=" * 10)
-    print(json.dumps(base_data, cls=EnhancedJSONEncoder))
+
+    with open(output_file, "w") as outfile:
+        json.dump(base_data, outfile, indent=4)
