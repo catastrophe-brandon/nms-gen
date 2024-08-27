@@ -1,6 +1,5 @@
 import copy
 import dataclasses
-import os
 import json
 from pathlib import Path
 from typing import List
@@ -11,10 +10,10 @@ import argparse
 
 parser = argparse.ArgumentParser(description="Produces updated NMS base json")
 parser.add_argument(
-    "base_json", type=str, help="Path to the json file containing base data"
+    "base_json", type=str, help="Path to the JSON file containing base data"
 )
 parser.add_argument(
-    "sprite_file", type=str, help="Path to the json file with the input sprite data"
+    "sprite_file", type=str, help="Path to the JSON file with the input sprite data"
 )
 parser.add_argument(
     "z_up",
@@ -92,7 +91,7 @@ def validate_base_input_data(base_input_data: dict):
         raise InvalidBaseDataError
 
 
-# For now, use hard-coded color values. Need to find a better way to map colors to objects
+# For now, use hard-coded RGB color values. Need to find a better way to map colors to objects
 MARIO_BLUE_BACKGROUND = (146, 144, 255, 255)
 MARIO_RED = (181, 49, 32, 255)
 MARIO_BROWN = (107, 109, 0, 255)
@@ -104,6 +103,10 @@ MM_TEAL = (0, 232, 216, 255)
 MM_FACE = (252, 216, 168, 255)
 MM_WHITE = (255, 255, 255, 0)
 MM_OFF_WHITE = (252, 252, 252, 255)
+LINK_FACE = (252, 152, 56, 255)
+LINK_BROWN = (200, 76, 12, 255)
+LINK_GREEN = (128, 208, 16, 255)
+LINK_GRAY = (116, 116, 116, 255)
 
 # Oversimplified mapping of 8-bit color channel pixel colors to tuples
 # Each tuple is nms_obj_type, userdata_value
@@ -111,7 +114,7 @@ MM_OFF_WHITE = (252, 252, 252, 255)
 color_map = {
     0: (DEFAULT_OBJECT, 0),
     MARIO_RED: (STONE_DOME_ROOF, 34),
-    MARIO_BROWN: (WOOD_FLOOR_TILE, 88),
+    MARIO_BROWN: (WOOD_FLOOR_TILE, 88), # TODO: Find the right udata value
     MARIO_FACE: (STONE_FLOOR_TILE, 0),
     MARIO_BLUE_BACKGROUND: None,
     BLACK: ("^F_FLOOR", 0),
@@ -121,6 +124,10 @@ color_map = {
     MM_WHITE: ("^BUILDPAVING_BIG", 0),
     BLACK2: ("^F_FLOOR", 0),
     MM_OFF_WHITE: ("^BUILDPAVING_BIG", 0),
+    LINK_FACE: (STONE_FLOOR_TILE, 0),
+    LINK_BROWN: (WOOD_FLOOR_TILE, 88),  # TODO: Find the right udata value
+    LINK_GREEN: ("^BUILDPAVING_BIG", 0),
+    LINK_GRAY: None
 }
 
 
@@ -181,7 +188,7 @@ def sprite_data_to_objects(
                     this_obj = create_obj_for_color(
                         base_computer, [tile_x, tile_z, tile_y], obj_type
                     )
-                result.append(this_obj)
+                    result.append(this_obj)
             offset += 1
     return result
 
