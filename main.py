@@ -76,6 +76,7 @@ BASE_FLAG_ID = "^BASE_FLAG"
 STONE_DOME_ROOF = "^S_ROOF5"
 WOOD_FLOOR_TILE = "^T_FLOOR"
 STONE_FLOOR_TILE = "^S_FLOOR"
+PAVING = "^BUILDPAVING_BIG"
 DEFAULT_OBJECT = STONE_FLOOR_TILE
 
 
@@ -107,6 +108,11 @@ LINK_FACE = (252, 152, 56, 255)
 LINK_BROWN = (200, 76, 12, 255)
 LINK_GREEN = (128, 208, 16, 255)
 LINK_GRAY = (116, 116, 116, 255)
+SAM_GREEN = (0, 148, 0, 255)
+SAM_ORANGE = (252, 152, 56, 255)
+SAM_RED = (216, 40, 0, 255)
+SAM_LIME = (184, 248, 24, 255)
+SAM_WHITE = (255, 255, 255, 255)
 
 # Oversimplified mapping of 8-bit color channel pixel colors to tuples
 # Each tuple is nms_obj_type, userdata_value
@@ -114,20 +120,25 @@ LINK_GRAY = (116, 116, 116, 255)
 color_map = {
     0: (DEFAULT_OBJECT, 0),
     MARIO_RED: (STONE_DOME_ROOF, 34),
-    MARIO_BROWN: (WOOD_FLOOR_TILE, 88), # TODO: Find the right udata value
+    MARIO_BROWN: (WOOD_FLOOR_TILE, 88),  # TODO: Find the right udata value
     MARIO_FACE: (STONE_FLOOR_TILE, 0),
     MARIO_BLUE_BACKGROUND: None,
     BLACK: ("^F_FLOOR", 0),
     MM_BLUE: ("^CUBEGLASS", 0),
     MM_TEAL: ("^CUBEROOM", 0),
     MM_FACE: (STONE_FLOOR_TILE, 0),
-    MM_WHITE: ("^BUILDPAVING_BIG", 0),
+    MM_WHITE: (PAVING, 0),
     BLACK2: ("^F_FLOOR", 0),
-    MM_OFF_WHITE: ("^BUILDPAVING_BIG", 0),
+    MM_OFF_WHITE: (PAVING, 0),
     LINK_FACE: (STONE_FLOOR_TILE, 0),
     LINK_BROWN: (WOOD_FLOOR_TILE, 88),  # TODO: Find the right udata value
-    LINK_GREEN: ("^BUILDPAVING_BIG", 0),
-    LINK_GRAY: None
+    LINK_GREEN: ("^T_ROOF6", 46),
+    LINK_GRAY: None,
+    SAM_RED: (PAVING, 4278190088),
+    SAM_GREEN: (PAVING, 4278190091),
+    SAM_ORANGE: (STONE_FLOOR_TILE, 0),
+    SAM_LIME: (PAVING, 427819091),
+    SAM_WHITE: (PAVING, 0),
 }
 
 
