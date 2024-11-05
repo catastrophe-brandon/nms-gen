@@ -1,5 +1,7 @@
 # nms_gen
 
+![Megaman as a No Man's Sky Base](screencaps/megaman.jpeg)
+
 ## Overview 
 
 `nms_gen` is a cli tool used to inject pixel art into a No Man's Sky save file as base parts/geometry.
