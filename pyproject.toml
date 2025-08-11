@@ -1,0 +1,11 @@
+[project]
+name = "nms-gen"
+version = "0.1.0"
+description = "No Man's Sky Pixel Art Base Generation Tool"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "mypy-extensions>=1.1.0",
+    "pillow>=11.3.0",
+    "ruff>=0.12.8",
+]

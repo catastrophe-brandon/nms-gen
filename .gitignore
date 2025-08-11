@@ -1,2 +1,5 @@
 .idea/
 env/
+__pycache__/
+input_bases/
+output_bases/
