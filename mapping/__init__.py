@@ -8,7 +8,7 @@ from constants import (
     WOOD_FLOOR_TILE,
     PAVING,
     DEFAULT_OBJECT,
-    STONE_DOME_ROOF,
+    STONE_DOME_ROOF, MAX_BASE_OBJS,
 )
 from validation import ImageTooBigError
 from model import NMSObject

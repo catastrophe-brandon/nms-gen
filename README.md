@@ -20,9 +20,9 @@ The [No Man's Sky Save Editor](https://github.com/goatfungus/NMSSaveEditor) prov
 
 ## Example nms-gen Use
 
-Assuming one has cloned the source and set up the program (documentation needed), the process of updating the base data from a sprite is a one-liner command like the following:
+Assuming one has cloned the source and set things up with `uv`, the process of updating the base data from a sprite is a one-liner command like the following:
 
-`python main.py input_bases/bubble_base.json sprites/mega_man_standing.png 40 --o my_output_file.json`
+`uv run main.py input_bases/bubble_base.json sprites/mega_man_standing.png 40 --o my_output_file.json`
 
 ### Command Break-down
 
@@ -34,7 +34,7 @@ The `40` is simply a z-up value to elevate the base geometry so that it doesn't 
 
 `--o my_output_file.json` is how you specify the updated save data output file.
 
-If your pixel data import is successful you'll see something like this:
+If your pixel data import is successful you'll see something like this in the logging:
 
 ```
 Tile coord: (100.0, 120.0, 40.0)
