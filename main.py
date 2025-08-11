@@ -41,7 +41,6 @@ def file_exists(file_path):
 
 
 if __name__ == "__main__":
-
     args = vars(parser.parse_args())
 
     # path to base data json file
