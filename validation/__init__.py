@@ -1,12 +1,23 @@
-from constants import BASE_FLAG_ID
+from constants import BASE_FLAG_ID, MAX_BASE_OBJS
+
+
+class IncompatibleImageError:
+    pass
 
 
 def validate_pixel_input_data(pixel_input_data):
     """Confirm that the pixel data adheres to the limitations we impose"""
+
     # Limit of 3000 pixels
-    # Limitations on file type
-    # Limitations on color depth
-    pass
+    width, height = pixel_input_data.size
+    if width * height > MAX_BASE_OBJS:
+        raise ImageTooBigError
+
+    # Confirm quantization compat the laziest way ever
+    try:
+        pixel_input_data.quantize(colors=256)
+    except ValueError:
+        raise IncompatibleImageError
 
 
 def validate_base_input_data(base_input_data: dict):

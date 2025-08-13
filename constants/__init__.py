@@ -10,4 +10,4 @@ PAVING = "^BUILDPAVING_BIG"
 
 
 # DEFAULT_OBJECT is the "standard" or "background" used when mapping
-DEFAULT_OBJECT = STONE_FLOOR_TILE
+DEFAULT_OBJECT_ID = STONE_FLOOR_TILE

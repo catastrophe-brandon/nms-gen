@@ -3,6 +3,8 @@ from pathlib import Path
 
 import argparse
 
+from PIL import Image
+
 from constants import MAX_BASE_OBJS
 from mapping import sprite_data_to_objects
 from model import NMSObject
@@ -43,10 +45,10 @@ def file_exists(file_path):
 if __name__ == "__main__":
     args = vars(parser.parse_args())
 
-    # path to base data json file
+    # path to base data JSON file
     base_data_file = args["base_json"]
 
-    # path to sprite data file
+    # path to a sprite data file
     sprite_data_file = args["sprite_file"]
 
     output_file = args["o"]
@@ -67,13 +69,14 @@ if __name__ == "__main__":
         exit(1)
 
     validate_base_input_data(base_data)
-    validate_pixel_input_data(sprite_data_file)
 
     # TODO: Add logic to find the base_computer instead of assuming it's first
     base_computer = NMSObject(base_data.get("Objects")[0])
-    objects = sprite_data_to_objects(sprite_data_file, base_computer, z_up=z_up)
 
-    assert len(objects) <= MAX_BASE_OBJS
+    with Image.open(sprite_data_file) as image:
+        validate_pixel_input_data(image)
+        image = image.quantize(colors=256)
+        objects = sprite_data_to_objects(image, base_computer, z_up=z_up)
 
     # Update the JSON with new objects
     dict_objects = [nms_object.as_dict() for nms_object in objects]
