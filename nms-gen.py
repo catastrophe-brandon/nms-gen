@@ -5,7 +5,6 @@ import argparse
 
 from PIL import Image
 
-from constants import MAX_BASE_OBJS
 from mapping import sprite_data_to_objects
 from model import NMSObject
 import logging
@@ -14,7 +13,9 @@ from validation import validate_base_input_data, validate_pixel_input_data
 
 logger = logging.getLogger(__name__)
 
-parser = argparse.ArgumentParser(description="Produces updated NMS base json")
+parser = argparse.ArgumentParser(
+    description="Produces updated NMS base JSON data from PNG image data (pixel art); intended to be used with NMS Save Editor"
+)
 parser.add_argument(
     "base_json", type=str, help="Path to the JSON file containing base data"
 )
@@ -38,7 +39,7 @@ def load_base_json(file_path) -> dict:
 
 def file_exists(file_path):
     if not Path(file_path).is_file():
-        print(f"The file specified does not exist: {file_path}")
+        logger.error(f"The file specified does not exist: {file_path}")
         exit(1)
 
 
@@ -62,10 +63,10 @@ if __name__ == "__main__":
     try:
         base_data = load_base_json(base_data_file)
     except Exception as e:
-        print(
+        logger.error(
             f"An error occurred when trying to load base json data from {base_data_file}"
         )
-        print(e)
+        logger.error(e)
         exit(1)
 
     validate_base_input_data(base_data)

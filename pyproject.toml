@@ -8,4 +8,5 @@ dependencies = [
     "mypy-extensions>=1.1.0",
     "pillow>=11.3.0",
     "ruff>=0.12.8",
+    "pytest"
 ]
