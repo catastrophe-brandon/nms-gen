@@ -21,12 +21,12 @@ MARIO_BLUE_BACKGROUND = (146, 144, 255, 255)
 MARIO_RED = (181, 49, 32, 255)
 MARIO_BROWN = (107, 109, 0, 255)
 MARIO_FACE = (234, 158, 34, 255)
-BLACK = (0, 0, 0, 0)
+BLACK = ((0, 0, 0, 0),)
 BLACK2 = (0, 0, 0, 255)
 MM_BLUE = (0, 112, 236, 255)
 MM_TEAL = (0, 232, 216, 255)
 MM_FACE = (252, 216, 168, 255)
-MM_WHITE = (255, 255, 255, 0)
+MM_WHITE = ((255, 255, 255, 0),)
 MM_OFF_WHITE = (252, 252, 252, 255)
 LINK_FACE = (252, 152, 56, 255)
 LINK_BROWN = (200, 76, 12, 255)
@@ -67,9 +67,81 @@ color_map = {
     SAM_WHITE: (PAVING, 0),
 }
 
-# New color map for 256 color palette mapping
+# New color map for 64 color palette mapping
 # Maps color indexes to tuples with NMS Object IDs and userdata values
-color_index_map = {0: (DEFAULT_OBJECT_ID, 0)}
+# Note: Color indices move "vertically" through the colors represented in the test image
+color_index_map = {
+    # (124, 124, 124) - Darker Gray
+    0: ("^F_FLOOR", 0),
+    # (188, 188, 188) - Lighter gray
+    1: (DEFAULT_OBJECT_ID, 0),
+    # (0, 120, 248) -
+    2: (DEFAULT_OBJECT_ID, 0),
+    # (0, 88, 248)
+    3: (DEFAULT_OBJECT_ID, 0),
+    # (104, 68, 252)
+    4: (DEFAULT_OBJECT_ID, 0),
+    # (216, 0, 204)
+    5: (DEFAULT_OBJECT_ID, 0),
+    6: (DEFAULT_OBJECT_ID, 0),
+    7: (DEFAULT_OBJECT_ID, 0),
+    8: (DEFAULT_OBJECT_ID, 0),
+    9: (DEFAULT_OBJECT_ID, 0),
+    10: (DEFAULT_OBJECT_ID, 0),
+    11: (DEFAULT_OBJECT_ID, 0),
+    12: (DEFAULT_OBJECT_ID, 0),
+    13: (DEFAULT_OBJECT_ID, 0),
+    14: (DEFAULT_OBJECT_ID, 0),
+    15: (DEFAULT_OBJECT_ID, 0),
+    16: (DEFAULT_OBJECT_ID, 0),
+    17: (DEFAULT_OBJECT_ID, 0),
+    18: (DEFAULT_OBJECT_ID, 0),
+    19: (DEFAULT_OBJECT_ID, 0),
+    20: (DEFAULT_OBJECT_ID, 0),
+    21: (DEFAULT_OBJECT_ID, 0),
+    22: (DEFAULT_OBJECT_ID, 0),
+    23: (DEFAULT_OBJECT_ID, 0),
+    24: (DEFAULT_OBJECT_ID, 0),
+    25: (DEFAULT_OBJECT_ID, 0),
+    26: (DEFAULT_OBJECT_ID, 0),
+    27: (DEFAULT_OBJECT_ID, 0),
+    28: (DEFAULT_OBJECT_ID, 0),
+    29: (DEFAULT_OBJECT_ID, 0),
+    30: (DEFAULT_OBJECT_ID, 0),
+    31: (DEFAULT_OBJECT_ID, 0),
+    32: (DEFAULT_OBJECT_ID, 0),
+    33: (DEFAULT_OBJECT_ID, 0),
+    34: (DEFAULT_OBJECT_ID, 0),
+    35: (DEFAULT_OBJECT_ID, 0),
+    36: (DEFAULT_OBJECT_ID, 0),
+    37: (DEFAULT_OBJECT_ID, 0),
+    38: (DEFAULT_OBJECT_ID, 0),
+    39: (DEFAULT_OBJECT_ID, 0),
+    40: (DEFAULT_OBJECT_ID, 0),
+    41: (DEFAULT_OBJECT_ID, 0),
+    42: (DEFAULT_OBJECT_ID, 0),
+    43: (DEFAULT_OBJECT_ID, 0),
+    44: (DEFAULT_OBJECT_ID, 0),
+    45: (DEFAULT_OBJECT_ID, 0),
+    46: (DEFAULT_OBJECT_ID, 0),
+    47: (DEFAULT_OBJECT_ID, 0),
+    48: (DEFAULT_OBJECT_ID, 0),
+    49: (DEFAULT_OBJECT_ID, 0),
+    50: (DEFAULT_OBJECT_ID, 0),
+    51: (DEFAULT_OBJECT_ID, 0),
+    52: (DEFAULT_OBJECT_ID, 0),
+    53: (DEFAULT_OBJECT_ID, 0),
+    54: (DEFAULT_OBJECT_ID, 0),
+    55: (DEFAULT_OBJECT_ID, 0),
+    56: (DEFAULT_OBJECT_ID, 0),
+    57: (DEFAULT_OBJECT_ID, 0),
+    58: (DEFAULT_OBJECT_ID, 0),
+    59: (DEFAULT_OBJECT_ID, 0),
+    60: (DEFAULT_OBJECT_ID, 0),
+    61: (DEFAULT_OBJECT_ID, 0),
+    62: (DEFAULT_OBJECT_ID, 0),
+    63: (DEFAULT_OBJECT_ID, 0),
+}
 
 
 def sprite_data_to_objects(
@@ -94,7 +166,6 @@ def sprite_data_to_objects(
         # If pixel is transparent, skip
         # TODO: Figure out how to handle transparency
         if i[3] != 0:
-            # TODO: logging setup
             object_id = color_map[i][0]
             object_userdata = color_map[i][1]
             logger.debug(f"offset: {offset} ({x},{y})")
