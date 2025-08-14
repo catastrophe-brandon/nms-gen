@@ -7,6 +7,8 @@ STONE_DOME_ROOF = "^S_ROOF5"
 WOOD_FLOOR_TILE = "^T_FLOOR"
 STONE_FLOOR_TILE = "^S_FLOOR"
 PAVING = "^BUILDPAVING_BIG"
+OLD_WOOD_FLOOR = "^W_FLOOR"
+CUBE_SOLID = "^CUBE_SOLID"
 
 
 # DEFAULT_OBJECT is the "standard" or "background" used when mapping
