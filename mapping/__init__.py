@@ -12,6 +12,8 @@ from constants import (
     DEFAULT_OBJECT_ID,
     STONE_DOME_ROOF,
     MAX_BASE_OBJS,
+    OLD_WOOD_FLOOR,
+    CUBE_SOLID,
 )
 from validation import ImageTooBigError
 from model import NMSObject, create_from_reference_object
@@ -67,40 +69,49 @@ color_map = {
     SAM_WHITE: (PAVING, 0),
 }
 
+# BUILD_PAVING_BIG with 0x0 userdata modifier applied, white
+WHITE_TILE = (PAVING, 0)
+RED_TILE = (OLD_WOOD_FLOOR, 8)
+BLACK_TILE = ("^F_FLOOR", 0)
+
+
 # New color map for 64 color palette mapping
 # Maps color indexes to tuples with NMS Object IDs and userdata values
-# Note: Color indices move "vertically" through the colors represented in the test image
 color_index_map = {
+    # === Row 0
     # (124, 124, 124) - Darker Gray
-    0: ("^F_FLOOR", 0),
+    0: (CUBE_SOLID, 15),
     # (188, 188, 188) - Lighter gray
-    1: (DEFAULT_OBJECT_ID, 0),
-    # (0, 120, 248) -
-    2: (DEFAULT_OBJECT_ID, 0),
-    # (0, 88, 248)
-    3: (DEFAULT_OBJECT_ID, 0),
+    1: (CUBE_SOLID, 14),
+    # (0, 120, 248) - Blue
+    2: (OLD_WOOD_FLOOR, 5),
+    # (0, 88, 248), 0x1000008 - Slightly lighter blue
+    3: (PAVING, 5),
     # (104, 68, 252)
-    4: (DEFAULT_OBJECT_ID, 0),
-    # (216, 0, 204)
-    5: (DEFAULT_OBJECT_ID, 0),
-    6: (DEFAULT_OBJECT_ID, 0),
-    7: (DEFAULT_OBJECT_ID, 0),
-    8: (DEFAULT_OBJECT_ID, 0),
-    9: (DEFAULT_OBJECT_ID, 0),
-    10: (DEFAULT_OBJECT_ID, 0),
-    11: (DEFAULT_OBJECT_ID, 0),
-    12: (DEFAULT_OBJECT_ID, 0),
-    13: (DEFAULT_OBJECT_ID, 0),
-    14: (DEFAULT_OBJECT_ID, 0),
-    15: (DEFAULT_OBJECT_ID, 0),
-    16: (DEFAULT_OBJECT_ID, 0),
-    17: (DEFAULT_OBJECT_ID, 0),
-    18: (DEFAULT_OBJECT_ID, 0),
-    19: (DEFAULT_OBJECT_ID, 0),
-    20: (DEFAULT_OBJECT_ID, 0),
-    21: (DEFAULT_OBJECT_ID, 0),
-    22: (DEFAULT_OBJECT_ID, 0),
+    4: (PAVING, 13),
+    # (216, 0, 204) - 0x3000007
+    5: (PAVING, 50331655),
+    6: RED_TILE,
+    7: (PAVING, 16777224),
+    # === Row 1
+    8: (OLD_WOOD_FLOOR, 10),
+    9: (WOOD_FLOOR_TILE, 0),
+    10: (PAVING, 33554443),
+    11: (PAVING, 11),
+    12: (PAVING, 11),
+    13: (OLD_WOOD_FLOOR, 12),
+    14: BLACK_TILE,
+    15: BLACK_TILE,
+    # === Row 2
+    16: BLACK_TILE,
+    17: (PAVING, 0),
+    18: (OLD_WOOD_FLOOR, 4),
+    19: (OLD_WOOD_FLOOR, 6),
+    20: (OLD_WOOD_FLOOR, 6),
+    21: (PAVING, 50331655),
+    22: (PAVING, 16777224),
     23: (DEFAULT_OBJECT_ID, 0),
+    # === Row 3
     24: (DEFAULT_OBJECT_ID, 0),
     25: (DEFAULT_OBJECT_ID, 0),
     26: (DEFAULT_OBJECT_ID, 0),
@@ -108,15 +119,17 @@ color_index_map = {
     28: (DEFAULT_OBJECT_ID, 0),
     29: (DEFAULT_OBJECT_ID, 0),
     30: (DEFAULT_OBJECT_ID, 0),
-    31: (DEFAULT_OBJECT_ID, 0),
-    32: (DEFAULT_OBJECT_ID, 0),
-    33: (DEFAULT_OBJECT_ID, 0),
+    31: BLACK_TILE,
+    # === Row 4
+    32: BLACK_TILE,
+    33: (PAVING, 0),
     34: (DEFAULT_OBJECT_ID, 0),
     35: (DEFAULT_OBJECT_ID, 0),
     36: (DEFAULT_OBJECT_ID, 0),
     37: (DEFAULT_OBJECT_ID, 0),
     38: (DEFAULT_OBJECT_ID, 0),
     39: (DEFAULT_OBJECT_ID, 0),
+    # === Row 5
     40: (DEFAULT_OBJECT_ID, 0),
     41: (DEFAULT_OBJECT_ID, 0),
     42: (DEFAULT_OBJECT_ID, 0),
@@ -124,28 +137,35 @@ color_index_map = {
     44: (DEFAULT_OBJECT_ID, 0),
     45: (DEFAULT_OBJECT_ID, 0),
     46: (DEFAULT_OBJECT_ID, 0),
-    47: (DEFAULT_OBJECT_ID, 0),
-    48: (DEFAULT_OBJECT_ID, 0),
-    49: (DEFAULT_OBJECT_ID, 0),
-    50: (DEFAULT_OBJECT_ID, 0),
+    47: BLACK_TILE,
+    # === Row 6
+    48: BLACK_TILE,
+    49: (PAVING, 50331656),
+    50: (PAVING, 50331656),
     51: (DEFAULT_OBJECT_ID, 0),
     52: (DEFAULT_OBJECT_ID, 0),
     53: (DEFAULT_OBJECT_ID, 0),
     54: (DEFAULT_OBJECT_ID, 0),
     55: (DEFAULT_OBJECT_ID, 0),
-    56: (DEFAULT_OBJECT_ID, 0),
-    57: (DEFAULT_OBJECT_ID, 0),
-    58: (DEFAULT_OBJECT_ID, 0),
-    59: (DEFAULT_OBJECT_ID, 0),
-    60: (DEFAULT_OBJECT_ID, 0),
-    61: (DEFAULT_OBJECT_ID, 0),
-    62: (DEFAULT_OBJECT_ID, 0),
-    63: (DEFAULT_OBJECT_ID, 0),
+    # === Row 7
+    # Brighter blue
+    56: (PAVING, 4),
+    # Darker Blue
+    57: (PAVING, 5),
+    # Violet
+    58: (OLD_WOOD_FLOOR, 6),
+    # Darker ping
+    59: (OLD_WOOD_FLOOR, 6),
+    # Greenish gray?
+    60: ("^T_ROOF", 16777294),
+    61: BLACK_TILE,
+    62: BLACK_TILE,
+    63: BLACK_TILE,
 }
 
 
 def sprite_data_to_objects(
-    image: Image, base_computer: NMSObject, z_up=0.0, tile_spacing=5
+    image: Image, anchor_object: NMSObject, z_up=0.0, tile_spacing=5
 ) -> List[NMSObject]:
     """Iterates through the sprite data and build a list of NMSObjects that will
     represent each pixel of the sprite. Be sure to run validation before invoking this function."""
@@ -159,25 +179,25 @@ def sprite_data_to_objects(
 
     # break data into rows
     offset = 0
-    for i in pixels:
+    for i in range(len(pixels)):
         # set x and y appropriately
         y = offset // width
         x = offset % width
         # If pixel is transparent, skip
         # TODO: Figure out how to handle transparency
-        if i[3] != 0:
-            object_id = color_map[i][0]
-            object_userdata = color_map[i][1]
-            logger.debug(f"offset: {offset} ({x},{y})")
-            tile_x = base_computer.position[0] + x * tile_spacing
-            tile_y = base_computer.position[1] + y * tile_spacing
-            # z is constant, flat
-            tile_z = base_computer.position[2] + z_up
-            logger.debug(f"Tile coord: ({tile_x}, {tile_y}, {tile_z})")
-            if object_id:
-                this_obj = create_from_reference_object(
-                    base_computer, [tile_x, tile_z, tile_y], object_id, object_userdata
-                )
-                result.append(this_obj)
+
+        object_id = color_index_map[i][0]
+        object_userdata = color_index_map[i][1]
+        logger.debug(f"offset: {offset} ({x},{y})")
+        tile_x = anchor_object.position[0] + x * tile_spacing
+        tile_y = anchor_object.position[1] + y * tile_spacing
+        # z is constant, flat
+        tile_z = anchor_object.position[2] + z_up
+        logger.debug(f"Tile coord: ({tile_x}, {tile_y}, {tile_z})")
+        if object_id:
+            this_obj = create_from_reference_object(
+                anchor_object, [tile_x, tile_z, tile_y], object_id, object_userdata
+            )
+            result.append(this_obj)
         offset += 1
     return result
