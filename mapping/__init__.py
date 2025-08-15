@@ -175,9 +175,9 @@ def sprite_data_to_objects(
 
     pixels = list(image.getdata())
     width, height = image.size
-    if width * height > MAX_BASE_OBJS:
-        logger.error("Image too big!")
-        raise ImageTooBigError
+    # if width * height > MAX_BASE_OBJS:
+    #     logger.error("Image too big!")
+    #     raise ImageTooBigError
 
     # break data into rows
     offset = 0
@@ -187,9 +187,9 @@ def sprite_data_to_objects(
         x = offset % width
         # If pixel is transparent, skip
         # TODO: Figure out how to handle transparency
-
-        object_id = color_index_map[i][0]
-        object_userdata = color_index_map[i][1]
+        pixel_color_index = pixels[i]
+        object_id = color_index_map[pixel_color_index][0]
+        object_userdata = color_index_map[pixel_color_index][1]
         logger.debug(f"offset: {offset} ({x},{y})")
         tile_x = anchor_object.position[0] + x * tile_spacing
         tile_y = anchor_object.position[1] + y * tile_spacing
