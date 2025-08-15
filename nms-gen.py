@@ -9,6 +9,7 @@ from mapping import sprite_data_to_objects
 from model import NMSObject
 import logging
 
+from palette import load_nes_palette
 from validation import validate_base_input_data, validate_pixel_input_data
 
 logger = logging.getLogger(__name__)
@@ -76,7 +77,7 @@ if __name__ == "__main__":
 
     with Image.open(sprite_data_file) as image:
         validate_pixel_input_data(image)
-        image = image.quantize(colors=256)
+        image = image.quantize(colors=64, palette=load_nes_palette())
         objects = sprite_data_to_objects(image, base_computer, z_up=z_up)
 
     # Update the JSON with new objects
