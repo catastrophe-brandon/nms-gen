@@ -1,11 +1,12 @@
 from typing import List
 
 from PIL import Image
+from nms_gen.validation import InvalidImageType
 import logging
 
 logger = logging.getLogger(__name__)
 
-from constants import (
+from nms_gen.constants import (
     STONE_FLOOR_TILE,
     WOOD_FLOOR_TILE,
     PAVING,
@@ -17,8 +18,8 @@ from constants import (
     WOOD_ROOF,
     METAL_FLOOR,
 )
-from validation import ImageTooBigError
-from model import NMSObject, create_from_reference_object
+from nms_gen.validation import ImageTooBigError
+from nms_gen.model import NMSObject, create_from_reference_object
 
 # For now, use hard-coded RGB color values. Need to find a better way to map colors to objects
 MARIO_BLUE_BACKGROUND = (146, 144, 255, 255)
@@ -166,22 +167,53 @@ color_index_map = {
 }
 
 
+def build_transparency_mask(original_image: Image) -> list[bool]:
+    """
+    Builds a list of bools for each pixel in the original image. True means the pixel is 100% transparent. False means the pixel is 0% transparent.
+    """
+    if original_image.mode != "RGBA":
+        raise ValueError("Image must be RGBA")
+
+    result = []
+    width, height = original_image.size
+    image_data = original_image.getdata()
+    for i in range(len(image_data)):
+        y = i // width
+        x = i % width
+        # Assuming this is RGBA
+        alpha = original_image.getpixel((x, y))[3]
+        if alpha == 255:
+            result.append(True)
+        else:
+            result.append(False)
+    return result
+
+
 def sprite_data_to_objects(
-    image: Image, anchor_object: NMSObject, z_up=0.0, tile_spacing=5
+    image: Image,
+    anchor_object: NMSObject,
+    z_up=0.0,
+    tile_spacing=5,
+    transparency_mask: list[bool] | None = None,
 ) -> List[NMSObject]:
     """Iterates through the sprite data and build a list of NMSObjects that will
     represent each pixel of the sprite. Be sure to run validation before invoking this function."""
+
+    # Confirm the image is RBG, 64-color, indexed. Image data per-pixel should be a 0-255 integer value
+    if image.mode != "P" or type(image.getdata()[0]) == tuple:
+        raise InvalidImageType
+
     result = []
 
     pixels = list(image.getdata())
     width, height = image.size
-    # if width * height > MAX_BASE_OBJS:
-    #     logger.error("Image too big!")
-    #     raise ImageTooBigError
 
     # break data into rows
     offset = 0
     for i in range(len(pixels)):
+        if transparency_mask and transparency_mask[i]:
+            # skip pixels that have a transparency mask bit set
+            continue
         # set x and y appropriately
         y = offset // width
         x = offset % width

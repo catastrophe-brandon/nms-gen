@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     with Image.open(sprite_data_file) as image:
         validate_pixel_input_data(image)
-        image = image.convert('RGB').quantize(colors=64, palette=load_nes_palette())
+        image = image.convert("RGB").quantize(palette=load_nes_palette())
         objects = sprite_data_to_objects(image, base_computer, z_up=z_up)
 
     # Update the JSON with new objects

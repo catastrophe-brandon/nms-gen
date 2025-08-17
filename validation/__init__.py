@@ -1,4 +1,4 @@
-from constants import BASE_FLAG_ID, MAX_BASE_OBJS
+from nms_gen.constants import BASE_FLAG_ID, MAX_BASE_OBJS
 
 import logging
 
@@ -49,4 +49,10 @@ class CorruptedBaseDataError(Exception):
 
 
 class ImageTooBigError(Exception):
+    pass
+
+
+class InvalidImageType(Exception):
+    """Raises when the image to be converted has not been quantized to 64-color format before conversion"""
+
     pass
