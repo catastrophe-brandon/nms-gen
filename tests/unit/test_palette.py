@@ -1,4 +1,4 @@
-from palette import load_color_palette
+from nms_gen.palette import load_color_palette
 
 
 def test_full_palette():
