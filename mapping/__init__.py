@@ -217,8 +217,6 @@ def sprite_data_to_objects(
         # set x and y appropriately
         y = offset // width
         x = offset % width
-        # If pixel is transparent, skip
-        # TODO: Figure out how to handle transparency
         pixel_color_index = pixels[i]
         object_id = color_index_map[pixel_color_index][0]
         object_userdata = color_index_map[pixel_color_index][1]
