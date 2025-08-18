@@ -1,4 +1,4 @@
-from nms_gen.constants import BASE_FLAG_ID, MAX_BASE_OBJS
+from constants import BASE_FLAG_ID, MAX_BASE_OBJS
 
 import logging
 

@@ -1,12 +1,12 @@
 from typing import List
 
 from PIL import Image
-from nms_gen.validation import InvalidImageType
+from validation import InvalidImageType
 import logging
 
 logger = logging.getLogger(__name__)
 
-from nms_gen.constants import (
+from constants import (
     STONE_FLOOR_TILE,
     WOOD_FLOOR_TILE,
     PAVING,
@@ -18,8 +18,8 @@ from nms_gen.constants import (
     WOOD_ROOF,
     METAL_FLOOR,
 )
-from nms_gen.validation import ImageTooBigError
-from nms_gen.model import NMSObject, create_from_reference_object
+from validation import ImageTooBigError
+from model import NMSObject, create_from_reference_object
 
 # For now, use hard-coded RGB color values. Need to find a better way to map colors to objects
 MARIO_BLUE_BACKGROUND = (146, 144, 255, 255)
@@ -167,7 +167,7 @@ color_index_map = {
 }
 
 
-def build_transparency_mask(original_image: Image) -> list[bool]:
+def build_transparency_mask(original_image: Image) -> list[bool] | None:
     """
     Builds a list of bools for each pixel in the original image. True means the pixel is 100% transparent. False means the pixel is 0% transparent.
     """
@@ -182,7 +182,7 @@ def build_transparency_mask(original_image: Image) -> list[bool]:
         x = i % width
         # Assuming this is RGBA
         alpha = original_image.getpixel((x, y))[3]
-        if alpha == 255:
+        if alpha == 0:
             result.append(True)
         else:
             result.append(False)
@@ -213,6 +213,8 @@ def sprite_data_to_objects(
     for i in range(len(pixels)):
         if transparency_mask and transparency_mask[i]:
             # skip pixels that have a transparency mask bit set
+            print(f"skipping pixel {i}")
+            offset += 1
             continue
         # set x and y appropriately
         y = offset // width
