@@ -12,13 +12,10 @@ from constants import (
     PAVING,
     DEFAULT_OBJECT_ID,
     STONE_DOME_ROOF,
-    MAX_BASE_OBJS,
     OLD_WOOD_FLOOR,
-    CUBE_SOLID,
     WOOD_ROOF,
     METAL_FLOOR,
 )
-from validation import ImageTooBigError
 from model import NMSObject, create_from_reference_object
 
 # For now, use hard-coded RGB color values. Need to find a better way to map colors to objects
@@ -83,9 +80,9 @@ BLACK_TILE = ("^F_FLOOR", 0)
 color_index_map = {
     # === Row 0
     # (124, 124, 124) - Darker Gray
-    0: (CUBE_SOLID, 15),
+    0: (PAVING, 15),
     # (188, 188, 188) - Lighter gray
-    1: (CUBE_SOLID, 14),
+    1: (PAVING, 1755537617),
     # (0, 120, 248) - Blue
     2: (OLD_WOOD_FLOOR, 5),
     # (0, 88, 248), 0x1000008 - Slightly lighter blue
