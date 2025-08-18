@@ -4,8 +4,9 @@ from pathlib import Path
 import argparse
 
 from PIL import Image
+from PIL.Image import Dither
 
-from mapping import sprite_data_to_objects
+from mapping import sprite_data_to_objects, build_transparency_mask
 from model import NMSObject
 import logging
 
@@ -77,8 +78,17 @@ if __name__ == "__main__":
 
     with Image.open(sprite_data_file) as image:
         validate_pixel_input_data(image)
-        image = image.convert("RGB").quantize(palette=load_nes_palette())
-        objects = sprite_data_to_objects(image, base_computer, z_up=z_up)
+        try:
+            alpha_mask = build_transparency_mask(image)
+        except ValueError as e:
+            alpha_mask = None
+
+        image = image.convert("RGB").quantize(
+            palette=load_nes_palette(), dither=Dither.NONE
+        )
+        objects = sprite_data_to_objects(
+            image, base_computer, z_up=z_up, transparency_mask=alpha_mask
+        )
 
     # Update the JSON with new objects
     dict_objects = [nms_object.as_dict() for nms_object in objects]
