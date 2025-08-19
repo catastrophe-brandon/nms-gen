@@ -1,6 +1,6 @@
 from PIL import Image
 
-from nms_gen.palette import load_color_palette
+from palette import load_color_palette
 
 
 def test_color_palette_quantization():
