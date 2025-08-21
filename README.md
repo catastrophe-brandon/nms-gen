@@ -26,7 +26,7 @@ Assuming one has cloned the source and set things up with `uv`, the process of u
 
 ### Command Break-down
 
-In this example `input_bases/bubble_base.json` is the original JSON file exported.
+In this example `input_bases/bubble_base.json` is the original JSON base data, exported from NMS Save Editor.
 
 `sprites/mega_man_standing.png` is the input sprite to inject into the base data.
 
@@ -34,15 +34,10 @@ The `40` is a z-up value to elevate the base geometry so that it doesn't get stu
 
 `--o my_output_file.json` is how you specify the updated save data output file.
 
-If your pixel data import is successful, you'll see something like this in the logging:
+If your pixel data import is successful, you'll see something like this in the console:
 
 ```
-Tile coord: (100.0, 120.0, 40.0)
-offset: 573 (21,24)
-Tile coord: (105.0, 120.0, 40.0)
-Writing output JSON file to my_output_file.json
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+Success!
 ```
 
-Note: This program is only verified to work with the example sprites in the `sprites` directory. Enhancements are needed to support a broader variety of sprites.
 
